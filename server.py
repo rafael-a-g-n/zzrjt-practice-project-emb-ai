@@ -20,11 +20,23 @@ def sent_analyzer():
     function. The output returned shows the label and its confidence
     score for the provided text.
     """
-    text_to_analyze = request.args.get('textToAnalyze')
+    text_to_analyze = request.args.get('textToAnalyze', '')
 
+    # Input validation
     # Check for blank input
     if not text_to_analyze or text_to_analyze.strip() == "":
         return "Blank input detected ! Please enter some text to analyze.", 400
+
+    # Sanitize input: strip whitespace
+    text_to_analyze = text_to_analyze.strip()
+
+    # Length validation (max 5000 characters)
+    if len(text_to_analyze) > 5000:
+        return "Input too long ! Please limit text to 5000 characters.", 400
+
+    # Check for minimum length (at least 2 characters)
+    if len(text_to_analyze) < 2:
+        return "Input too short ! Please enter at least 2 characters.", 400
 
     response = sentiment_analyzer(text_to_analyze)
 

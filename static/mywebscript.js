@@ -7,8 +7,31 @@ function RunSentimentAnalysis() {
     const submitButton = document.getElementById("submitButton");
 
     // Clear previous results
-    responseDiv.innerHTML = "";
+    responseDiv.textContent = "";
     responseDiv.className = "";
+
+    // Client-side validation
+    const trimmedText = textToAnalyze.trim();
+    
+    // Check for empty input
+    if (!trimmedText) {
+        responseDiv.textContent = "Please enter some text to analyze.";
+        responseDiv.classList.add("error");
+        return;
+    }
+
+    // Check length limits
+    if (trimmedText.length > 5000) {
+        responseDiv.textContent = "Text is too long. Please limit to 5000 characters.";
+        responseDiv.classList.add("error");
+        return;
+    }
+
+    if (trimmedText.length < 2) {
+        responseDiv.textContent = "Text is too short. Please enter at least 2 characters.";
+        responseDiv.classList.add("error");
+        return;
+    }
 
     // Show loading state
     loadingDiv.classList.add("active");
@@ -26,7 +49,8 @@ function RunSentimentAnalysis() {
             if (this.status === 200) {
                 // Success - valid sentiment analysis
                 const responseText = xhttp.responseText;
-                responseDiv.innerHTML = responseText;
+                // Use textContent for XSS protection
+                responseDiv.textContent = responseText;
                 
                 // Detect sentiment type and apply appropriate class
                 // Check for lowercase sentiment labels (after SENT_ prefix is removed)
@@ -41,11 +65,11 @@ function RunSentimentAnalysis() {
                 }
             } else if (this.status === 400 || this.status === 500) {
                 // Error - invalid or blank input
-                responseDiv.innerHTML = xhttp.responseText;
+                responseDiv.textContent = xhttp.responseText;
                 responseDiv.classList.add("error");
             } else {
                 // Unexpected error
-                responseDiv.innerHTML = "An unexpected error occurred. Please try again.";
+                responseDiv.textContent = "An unexpected error occurred. Please try again.";
                 responseDiv.classList.add("error");
             }
         }
@@ -55,7 +79,7 @@ function RunSentimentAnalysis() {
         // Network error
         loadingDiv.classList.remove("active");
         submitButton.disabled = false;
-        responseDiv.innerHTML = "Network error. Please check your connection.";
+        responseDiv.textContent = "Network error. Please check your connection.";
         responseDiv.classList.add("error");
     };
 
