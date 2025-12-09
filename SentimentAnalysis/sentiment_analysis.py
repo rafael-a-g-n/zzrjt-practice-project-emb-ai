@@ -18,13 +18,13 @@ def sentiment_analyzer(text_to_analyse):
     
     This function sends a POST request to the Watson Embedded AI Libraries
     deployed on the Cloud IDE server. If unavailable, it falls back to
-    IBM Watson NLU or VADER.
+    IBM Watson NLU.
     
     Args:
         text_to_analyse: Text string to analyze
         
     Returns:
-        JSON string with sentiment analysis results
+        Dictionary with 'label' and 'score' keys
     """
     # Try Watson Embedded AI Libraries (BERT) first
     url = ('https://sn-watson-sentiment-bert.labs.skills.network/'
@@ -37,7 +37,12 @@ def sentiment_analyzer(text_to_analyse):
     
     try:
         response = requests.post(url, json=myobj, headers=header, timeout=10)
-        return response.text
+        # Convert response text to dictionary
+        formatted_response = json.loads(response.text)
+        # Extract label and score from the nested dictionary
+        label = formatted_response['documentSentiment']['label']
+        score = formatted_response['documentSentiment']['score']
+        return {'label': label, 'score': score}
     except (requests.exceptions.RequestException,
             requests.exceptions.Timeout) as e:
         print(f"Watson BERT service unavailable: {e}")
@@ -53,11 +58,10 @@ def _watson_nlu_analyzer(text_to_analyse):
     
     if not api_key or not service_url:
         # Return error if Watson credentials not configured
-        return json.dumps({
-            'error': ('Watson NLU credentials not configured. '
-                      'Please set WATSON_NLU_API_KEY and WATSON_NLU_URL '
-                      'in .env file')
-        })
+        return {
+            'label': None,
+            'score': None
+        }
     
     try:
         # Setup Watson NLU
@@ -76,20 +80,18 @@ def _watson_nlu_analyzer(text_to_analyse):
         
         # Extract sentiment information
         sentiment = response.get('sentiment', {}).get('document', {})
-        label = sentiment.get('label', 'neutral').upper()
-        score = abs(sentiment.get('score', 0))
+        label = sentiment.get('label', 'neutral')
+        score = sentiment.get('score', 0)
         
-        # Format response
-        result = {
-            'label': f'SENT_{label}',
-            'score': score,
-            'sentiment': sentiment
+        # Return formatted response with label and score
+        return {
+            'label': label,
+            'score': score
         }
         
-        return json.dumps(result)
-        
     except Exception as e:
-        # Return error if Watson API fails
-        return json.dumps({
-            'error': f'Watson NLU error: {str(e)}'
-        })
+        # Return error format if Watson API fails
+        return {
+            'label': None,
+            'score': None
+        }

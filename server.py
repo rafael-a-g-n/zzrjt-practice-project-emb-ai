@@ -4,8 +4,8 @@ localhost:8080.
 """
 import os
 from dotenv import load_dotenv
-from flask import Flask, render_template, request
-from sentiment_analysis import sentiment_analyzer
+from flask import Flask, render_template, request, jsonify
+from SentimentAnalysis.sentiment_analysis import sentiment_analyzer
 
 # Load environment variables from .env file
 load_dotenv()
@@ -22,7 +22,7 @@ def sent_analyzer():
     """
     text_to_analyze = request.args.get('textToAnalyze')
     response = sentiment_analyzer(text_to_analyze)
-    return response
+    return jsonify(response)
 
 
 @app.route("/")
