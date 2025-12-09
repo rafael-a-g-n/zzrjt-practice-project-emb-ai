@@ -2,7 +2,6 @@
 analysis to be executed over the Flask channel and deployed on
 localhost:8080.
 """
-import os
 from dotenv import load_dotenv
 from flask import Flask, render_template, request
 from SentimentAnalysis.sentiment_analysis import sentiment_analyzer
@@ -22,20 +21,20 @@ def sent_analyzer():
     """
     text_to_analyze = request.args.get('textToAnalyze')
     response = sentiment_analyzer(text_to_analyze)
-    
+
     # Extract label and score from response
     label = response['label']
     score = response['score']
-    
-    # Handle case when label or score is None (error case)
+
+    # Handle case when label or score is None (invalid input)
     if label is None:
-        return "Error: Unable to analyze sentiment."
-    
+        return "Invalid input ! Try again.", 500
+
     # Format the output text
     # Remove 'SENT_' prefix from label for display
     sentiment_label = label.split('_')[1] if '_' in label else label
     return (f"The given text has been identified as {sentiment_label} "
-            f"with a score of {score}.")
+            f"with a score of {score}."), 200
 
 
 @app.route("/")

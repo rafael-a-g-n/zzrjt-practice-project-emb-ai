@@ -6,6 +6,7 @@ from ibm_watson.natural_language_understanding_v1 import (
     Features, SentimentOptions
 )
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+from ibm_cloud_sdk_core.api_exception import ApiException
 
 # Load environment variables
 load_dotenv()
@@ -18,7 +19,8 @@ def sentiment_analyzer(text_to_analyse):
         text_to_analyse: Text string to analyze
 
     Returns:
-        Dictionary with 'label' and 'score' keys
+        Dictionary with 'label' and 'score' keys.
+        Returns None for both if analysis fails.
     """
     # Get credentials from environment variables
     api_key = os.getenv('WATSON_NLU_API_KEY')
@@ -65,8 +67,17 @@ def sentiment_analyzer(text_to_analyse):
             'score': score
         }
 
-    except (KeyError, ValueError, TypeError):
-        # Return error format if Watson API fails
+    except ApiException as ex:
+        # Handle Watson API errors (500, 400, etc.)
+        print(f"Watson NLU API error: {ex.code} - {ex.message}")
+        return {
+            'label': None,
+            'score': None
+        }
+
+    except (KeyError, ValueError, TypeError) as ex:
+        # Return error format if response parsing fails
+        print(f"Response parsing error: {ex}")
         return {
             'label': None,
             'score': None
