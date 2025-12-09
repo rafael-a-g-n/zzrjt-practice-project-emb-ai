@@ -1,32 +1,64 @@
-<html>
-<head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="./static/mywebscript.js"></script>
-    <style>
-        .center-heading {
-            text-align: center;
-        }
-    </style>
-</head>
-<body>
-    <div class="card">
-        <div class="card-body">
-            <h1 class="center-heading">NLP - Sentiment Analysis using BERT</h1> 
-            <div style="padding: 25px 25px 25px 25px;">
-            <h2 class="mb-3">
-                <label class="form-label">Please enter the text to be analyzed</label>
-                <input type="textarea" class="form-control" id="textToAnalyze">
-            </h2>
-
-            <div style="padding: 25px 25px 25px 25px;">
-                <button onclick="RunSentimentAnalysis()" class="btn btn-secondary">Run Sentiment Analysis</button>
-            </div>
-            <div style="padding: 25px 25px 25px 25px;"></div>
-            <h2 class="mb-3">
-                <label class="form-label">Result of Sentiment Analysis</label>
-            </h2>
-
-            <div id="system_response" style="padding: 25px 25px 25px 25px;"></div>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="AI-powered sentiment analysis using IBM Watson NLU"
+    />
+    <title>Sentiment Analysis - IBM Watson NLU</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <script
+      src="{{ url_for('static', filename='mywebscript.js') }}"
+      defer
+    ></script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <div class="card-header">
+          <h1>AI Sentiment Analyzer</h1>
+          <p>Powered by IBM Watson Natural Language Understanding</p>
         </div>
+
+        <div class="card-body">
+          <div class="form-section">
+            <label for="textToAnalyze" class="form-label">
+              Enter text to analyze
+            </label>
+            <textarea
+              class="form-control"
+              id="textToAnalyze"
+              placeholder="Type or paste your text here... (Press Enter to analyze, Shift+Enter for new line)"
+              rows="5"
+            ></textarea>
+          </div>
+
+          <div class="btn-container">
+            <button
+              onclick="RunSentimentAnalysis()"
+              class="btn btn-primary"
+              id="submitButton"
+            >
+              Analyze Sentiment
+            </button>
+          </div>
+
+          <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Analyzing...</p>
+          </div>
+
+          <div class="result-section">
+            <label class="form-label">Analysis Result</label>
+            <div id="system_response"></div>
+          </div>
+        </div>
+      </div>
     </div>
-</body>
+  </body>
+</html>
