@@ -20,6 +20,11 @@ def sent_analyzer():
     score for the provided text.
     """
     text_to_analyze = request.args.get('textToAnalyze')
+
+    # Check for blank input
+    if not text_to_analyze or text_to_analyze.strip() == "":
+        return "Blank input detected ! Please enter some text to analyze.", 400
+
     response = sentiment_analyzer(text_to_analyze)
 
     # Extract label and score from response
