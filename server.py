@@ -2,6 +2,7 @@
 analysis to be executed over the Flask channel and deployed on
 localhost:8080.
 """
+import os
 from dotenv import load_dotenv
 from flask import Flask, render_template, request
 from SentimentAnalysis.sentiment_analysis import sentiment_analyzer
@@ -51,4 +52,4 @@ def render_index_page():
 
 
 if __name__ == "__main__":
-    app.run(host="localhost", port=8080)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
