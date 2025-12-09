@@ -83,9 +83,17 @@ def _watson_nlu_analyzer(text_to_analyse):
         label = sentiment.get('label', 'neutral')
         score = sentiment.get('score', 0)
         
+        # Format label to match Watson BERT format (SENT_POSITIVE, etc.)
+        label_map = {
+            'positive': 'SENT_POSITIVE',
+            'negative': 'SENT_NEGATIVE',
+            'neutral': 'SENT_NEUTRAL'
+        }
+        formatted_label = label_map.get(label.lower(), 'SENT_NEUTRAL')
+        
         # Return formatted response with label and score
         return {
-            'label': label,
+            'label': formatted_label,
             'score': score
         }
         
