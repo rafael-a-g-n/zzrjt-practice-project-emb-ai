@@ -12,8 +12,6 @@ A modern, responsive web application that performs real-time sentiment analysis 
 
 **[Try it live here →](https://sentiment-analyzer-aacl.onrender.com/)**
 
-![Sentiment Analyzer Screenshot](https://via.placeholder.com/800x400/667eea/ffffff?text=AI+Sentiment+Analyzer)
-
 ## ✨ Features
 
 - **Real-time Sentiment Analysis** - Instant analysis powered by IBM Watson NLU
